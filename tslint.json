@@ -1,0 +1,27 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint-eslint-rules",
+        "tslint:latest"
+    ],
+    "rules": {
+        "ter-max-len": [ /* sic! */
+            true, {
+                "code": 80,
+                "ignoreTemplateLiterals": true,
+                "ignoreUrls": true
+            }
+        ],
+        "object-curly-spacing": [true, "always"],
+        "quotemark": [true, "single", "avoid-escape"],
+        "variable-name": [false], /* allow-snake-case */
+        /* capIsNewExpcetion? */
+        "interface-name": [true, "never-prefix"],
+        "object-literal-sort-keys": false,
+        "no-console": [
+            false
+        ]
+    },
+    "jsRules": {},
+    "rulesDirectory": []
+}
