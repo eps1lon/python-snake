@@ -38,7 +38,10 @@ class SnakeGame(object):
 
     old_snake = self.snake
 
-    cmd = self.commands.pop(0)
+    if len(self.commands) > 0:
+      cmd = self.commands.pop(0)
+    else:
+      cmd = None
 
     if cmd is Command.UP:
       self.snake = self.snake.up()

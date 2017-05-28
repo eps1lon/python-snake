@@ -34,7 +34,7 @@ class Shape(metaclass=ABCMeta):
     pass
 
   def __str__(self):
-    return '\n'.join(''.join(row) for row in self.occupiedArea())
+    return '\n'.join(''.join(str(v) for v in row) for row in self.occupiedArea())
 
   def __repr__(self):
     return str(self)
