@@ -127,5 +127,5 @@ class Body(Shape):
     return matrix
 
   def offset(self):
-    dimensions = this.dimensions()
+    dimensions = self.dimensions()
     return Point(dimensions[0], dimensions[1])

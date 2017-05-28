@@ -3,18 +3,24 @@ from src.Shape import Shape
 from src.util import buildMatrix
 
 class Screen(Shape):
-  def __init__(self, width, height, map, shapes = []):
+  def __init__(self, width, height, map, shapes):
     self.width = width
     self.height = height
     self._point_mapping = map
-    self._shapes = shapes
+
+    # putting a list as default shares the pointer to that list
+    # among all instances
+    if shapes is None:
+      self._shapes = []
+    else:
+      self._shapes = shapes
 
   def offset(self):
     return Point(0, 0)
 
   def occupiedArea(self):
     width = self.width
-    height: self.height
+    height = self.height
     matrix = buildMatrix(width, height)
 
     for shape in self._shapes:
@@ -24,8 +30,8 @@ class Screen(Shape):
       shape_width = shape.width
       shape_height = shape.height
 
-      for row, dy in enumerate(shape.occupiedArea()):
-        for value, dx in enumerate(row):
+      for dy, row in enumerate(shape.occupiedArea()):
+        for dx, value in enumerate(row):
           mapped = self._point_mapping(
             Point(x + dx, y + dy),
             width, height,

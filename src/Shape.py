@@ -10,20 +10,14 @@ class Shape(metaclass=ABCMeta):
   def pointsList(self):
     points = []
 
-    for row, y in enumerate(self.occupiedArea()):
-      for value, x in enumerate(row):
+    for y, row in enumerate(self.occupiedArea()):
+      for x, value in enumerate(row):
         points.append([Point(x, y).add(self.offset()), value])
 
     return points
 
   def filteredPoints(self, fn):
-    return map(
-      lambda entry: entry[0], 
-      filter(
-        lambda entry: fn(entry[1]), 
-        self.pointsList()
-      )
-    )
+    return list(entry[0] for entry in self.pointsList() if fn(entry[1]))
 
   def occupiedPoints(self):
     return self.filteredPoints(lambda value: value > 0)
