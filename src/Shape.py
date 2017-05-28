@@ -32,3 +32,9 @@ class Shape(metaclass=ABCMeta):
   @abstractmethod
   def occupiedArea(self):
     pass
+
+  def __str__(self):
+    return '\n'.join(''.join(row) for row in self.occupiedArea())
+
+  def __repr__(self):
+    return str(self)
