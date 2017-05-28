@@ -57,3 +57,9 @@ class Segment(object):
         cur = cur.add(norm)
 
       yield cur; # last point
+
+  def __str__(self):
+    return '{}--{}'.format(str(self.start), str(self.end))
+
+  def __repr__(self):
+    return str(self)

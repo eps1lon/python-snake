@@ -29,6 +29,9 @@ class Point(object):
     else:
       return False
 
+  def __str__(self):
+    return '({}, {})'.format(self.x, self.y)
+
   def offset(self):
     return self
 
