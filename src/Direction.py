@@ -10,8 +10,8 @@ point: Point
 plane: Orientation
 """
 def fromPoint(point, plane):
-  for direction in plane._asdict():
-    if direction.delta.equals(point):
+  for direction in plane._asdict().values():
+    if direction.delta == point:
       return direction
 
   return None

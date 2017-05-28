@@ -24,10 +24,10 @@ class TestPoint(unittest.TestCase):
     )
 
   def testEqual(self):
-    self.assertTrue(Point(0, 0).equals(Point(0, 0)))
+    self.assertEqual(Point(0, 0), Point(0, 0))
 
-    self.assertFalse(Point(0, 0).equals(Point(1, 0)))
+    self.assertNotEqual(Point(0, 0), Point(1, 0))
 
-    self.assertFalse(Point(0, 0).equals(Point(0, 1)))
+    self.assertNotEqual(Point(0, 0), Point(0, 1))
 
-    self.assertFalse(Point(0, 0).equals(Point(1, 1)))
+    self.assertNotEqual(Point(0, 0), Point(1, 1))
