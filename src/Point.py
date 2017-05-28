@@ -21,7 +21,7 @@ class Point(object):
     return Point(self.x - other.x, self.y - other.y)
 
   def additiveInverseOf(self, other):
-    return self.add(other).equals(ZERO)
+    return self.add(other) == ZERO
 
   def __eq__(self, other):
     if type(self) is type(other):
