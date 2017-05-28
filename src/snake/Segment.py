@@ -23,9 +23,9 @@ class Segment(object):
     y_length = self.end.y - self.start.y
 
     if x_length != 0:
-      return Point(abs(x_length) / x_length, 0)
+      return Point(int(abs(x_length) / x_length), 0)
     elif y_length != 0:
-      return Point(0, abs(y_length) / y_length)
+      return Point(0, int(abs(y_length) / y_length))
     else:
       return None
 
