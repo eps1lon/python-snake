@@ -1,9 +1,9 @@
-from collections import namedtuple
+from namedlist import namedlist
 
 from .Point import Point
 
-Direction = namedtuple('Direction', ['delta', 'left', 'right'])
-Orientation = namedtuple('Orientation', ['up', 'right', 'down', 'left'])
+Direction = namedlist('Direction', ['delta', 'left', 'right'])
+Orientation = namedlist('Orientation', ['up', 'right', 'down', 'left'])
 
 """
 point: Point
