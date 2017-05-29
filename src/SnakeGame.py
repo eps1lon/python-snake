@@ -33,6 +33,7 @@ class SnakeGame(object):
       snake = Snake()
     
     self._setUpThreads()
+    self._setUpCallbacks()
 
     self.snake = snake
     self.width = width
@@ -51,6 +52,9 @@ class SnakeGame(object):
     self._stop_game.set()
     self._worker_stopped = Event()
     self._worker_stopped.set()
+
+  def _setUpCallbacks(self):
+    self.onBeforeTick = lambda game: None
 
   def run(self):
     self.pause()
@@ -111,6 +115,8 @@ class SnakeGame(object):
   def tick(self):
     if self.isRunning() is False:
       raise Exception('game has stopped')
+
+    self.onBeforeTick(self)
 
     print('game tick')
 
