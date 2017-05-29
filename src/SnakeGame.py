@@ -1,4 +1,5 @@
 from enum import Enum
+from threading import Thread, Event
 
 from src.Display import Display
 from src.Point import Point
@@ -6,6 +7,19 @@ from src.Screen import Screen
 from src.screen.TorusScreen import TorusScreen
 from src.Snake import Snake
 from src.util import rand
+
+# ticks per second
+GAME_SPEED = 1
+
+def _game_worker(game):
+  print('game_worker started')
+
+  while not game._stop_game.is_set():
+    game.tick()
+    game._stop_game.wait(1 / GAME_SPEED)
+
+  game._worker_stopped.set()
+  print('game_worker stopped')
 
 class Command(Enum):
   UP = 0
@@ -17,6 +31,8 @@ class SnakeGame(object):
   def __init__(self, snake = None, width = 16, height = 16):
     if snake is None:
       snake = Snake()
+    
+    self._setUpThreads()
 
     self.snake = snake
     self.width = width
@@ -25,8 +41,40 @@ class SnakeGame(object):
     self.commands = []
     self.apples = []
 
+  def _setUpThreads(self):
+    self._stop_game = Event()
+    self._stop_game.set()
+    self._worker_stopped = Event()
+    self._worker_stopped.set()
+
+  def run(self):
+    self.pause()
+
+    self._stop_game.clear()
+    self._worker_stopped.clear()
+
+    Thread(
+      target=_game_worker,
+      kwargs={
+        'game': self,
+      },
+      name='game_worker'
+    ).start()
+
+  def pause(self):
+    self._stop_game.set()
+
+    self._worker_stopped.wait()
+
+  def stop(self):
+    self.pause()
+    self.reset()
+
+  def reset(self):
+    pass
+
   def isRunning(self):
-    return True
+    return not self._stop_game.is_set()
 
   # command executed on next #tick
   def invoke(self, cmd):
@@ -57,6 +105,8 @@ class SnakeGame(object):
   def tick(self):
     if self.isRunning() is False:
       raise Exception('game has stopped')
+
+    print('game tick')
 
     old_snake = self.snake
 
