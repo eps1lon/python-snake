@@ -72,8 +72,6 @@ class LedMatrix(Display):
 
     self.reset()
 
-    
-
   @property
   def _pins(self):
     return self.rows + self.cols
