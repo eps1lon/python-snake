@@ -9,8 +9,12 @@ default_body = Body([Segment(Point(0, 0), Point(2, 0))])
 class Snake(object):
   @staticmethod
   def withDirection(start, dir):
+    return Snake.withLength(start, dir, 1)
+
+  @staticmethod
+  def withLength(start, dir, length):
     return Snake(Body([
-      Segment(start, start.add(dir.delta)),
+      Segment(start, start.add(Point(dir.delta.x * length, dir.delta.y * length))),
     ]))
 
   def __init__(self, body = default_body):

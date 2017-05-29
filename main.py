@@ -2,6 +2,9 @@
 import sys
 from time import sleep
 
+from src.plane import plane
+from src.Point import Point
+from src.Snake import Snake
 from src.SnakeGame import SnakeGame, Command
 from src.util import rand
 
@@ -47,7 +50,10 @@ def randomMovement(game):
 
   game.invoke(cmd)
 def main():
-  game = SnakeGame(None, 8, 8)
+  game = SnakeGame(
+    Snake.withLength(Point(0, 0), plane.right, 5),
+    8, 8
+  )
 
   try:
     display_arg = sys.argv[1]
