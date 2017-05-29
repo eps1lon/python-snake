@@ -9,15 +9,14 @@ from src.screen.TorusScreen import TorusScreen
 from src.Snake import Snake
 from src.util import rand
 
-# ticks per second
-GAME_SPEED = 1
+DEFAULT_TICKS_PER_SECOND = 5
 
 def _game_worker(game):
   print('game_worker started')
 
   while not game._stop_game.is_set():
     game.tick()
-    game._stop_game.wait(1 / GAME_SPEED)
+    game._stop_game.wait(game._speed)
 
   game._worker_stopped.set()
   print('game_worker stopped')
@@ -43,6 +42,7 @@ class SnakeGame(object):
     self.apples = []
 
     self.setDisplay(NullDisplay())
+    self.setTicksPerSecond(DEFAULT_TICKS_PER_SECOND)
 
   def _setUpThreads(self):
     self._stop_game = Event()
@@ -163,6 +163,9 @@ class SnakeGame(object):
       raise TypeError('display needs to implement Display')
 
     self._display = display
+
+  def setTicksPerSecond(self, ticks):
+    self._speed = 1 / ticks
 
   def tearDown(self):
     self.stop()

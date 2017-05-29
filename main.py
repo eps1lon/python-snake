@@ -48,7 +48,14 @@ def main():
     display = displayFromArg(display_arg)
     game.setDisplay(display)
 
-    print('game running with {}'.format(display.__class__.__name__))
+    ticks_per_second = 20
+    game.setTicksPerSecond(ticks_per_second)
+
+    print('game running on {} with {} ticks/s'.format(
+      display.__class__.__name__,
+      
+      ticks_per_second
+    ))
     game.run()
 
     sleep(5)
