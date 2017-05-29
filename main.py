@@ -64,7 +64,7 @@ def main():
     display = displayFromArg(display_arg)
     game.setDisplay(display)
 
-    ticks_per_second = 10
+    ticks_per_second = 1
     game.setTicksPerSecond(ticks_per_second)
 
     game.onBeforeTick = randomMovement
@@ -76,7 +76,7 @@ def main():
     ))
     game.run()
 
-    sleep(5)
+    game.join()
   finally:
     game.tearDown()
 

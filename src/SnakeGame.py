@@ -119,12 +119,13 @@ class SnakeGame(object):
     self.onBeforeTick(self)
 
     old_snake = self.snake
+    command = self.nextCommand()
 
     self.executeCommand()
 
     # ate powerup
-
     self._display.show(self.screen())
+    self._display.debug(str(command))
 
   def screen(self):
     return TorusScreen(
@@ -162,8 +163,11 @@ class SnakeGame(object):
 
     return None
 
-  def nextCommand():
-    return self.commands[0]
+  def nextCommand(self):
+    try:
+      return self.commands[0]
+    except IndexError:
+      return None
 
   def setDisplay(self, display):
     if not isinstance(display, Display):

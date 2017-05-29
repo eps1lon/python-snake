@@ -6,5 +6,9 @@ class Display(metaclass=ABCMeta):
     pass
 
   @abstractmethod
+  def debug(self, text):
+    pass
+
+  @abstractmethod
   def tearDown(self):
     pass

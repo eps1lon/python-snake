@@ -65,6 +65,9 @@ class LedMatrix(Display):
       name='show_worker'
     ).start()
 
+  def debug(self, text):
+    print(text)
+
   def clear(self):
     self._do_show.clear()
 
