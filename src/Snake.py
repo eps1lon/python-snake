@@ -6,6 +6,9 @@ from src.snake.Segment import Segment
 
 default_body = Body([Segment(Point(0, 0), Point(2, 0))])
 
+class InvalidMovement(Exception):
+  pass
+
 class Snake(object):
   @staticmethod
   def withDirection(start, dir):
@@ -72,4 +75,4 @@ class Snake(object):
 
       return Snake(new_body.sanitize())
     else:
-      return self
+      raise InvalidMovement('no movement backwards allowed')

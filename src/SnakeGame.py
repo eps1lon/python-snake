@@ -6,7 +6,7 @@ from src.display.NullDisplay import NullDisplay
 from src.Point import Point
 from src.Screen import Screen
 from src.screen.TorusScreen import TorusScreen
-from src.Snake import Snake
+from src.Snake import Snake, InvalidMovement
 from src.util import rand
 
 DEFAULT_TICKS_PER_SECOND = 5
@@ -101,15 +101,18 @@ class SnakeGame(object):
     else:
       cmd = None
 
-    if cmd is Command.UP:
-      self.snake = self.snake.up()
-    elif cmd is Command.RIGHT:
-      self.snake = self.snake.right()
-    elif cmd is Command.DOWN:
-      self.snake = self.snake.down()
-    elif cmd is Command.LEFT:
-      self.snake = self.snake.left()
-    else:
+    try:
+      if cmd is Command.UP:
+        self.snake = self.snake.up()
+      elif cmd is Command.RIGHT:
+        self.snake = self.snake.right()
+      elif cmd is Command.DOWN:
+        self.snake = self.snake.down()
+      elif cmd is Command.LEFT:
+        self.snake = self.snake.left()
+      else:
+        self.snake = self.snake.forward()
+    except InvalidMovement:
       self.snake = self.snake.forward()
 
   def tick(self):
