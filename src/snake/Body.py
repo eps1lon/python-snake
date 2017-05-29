@@ -1,10 +1,13 @@
-from math import inf
+# python >= 3.5
+# from math import inf
 from functools import reduce
 
 from src.Point import Point
 from src.Shape import Shape
 from src.util import buildMatrix
 from src.snake.Segment import Segment
+
+inf = float('inf')
 
 class Body(Shape):
   def __init__(self, segments):
