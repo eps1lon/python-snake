@@ -8,13 +8,16 @@ class ConsoleOut(Display):
   def __init__(self):
     self._calls = 0
 
+    self._stdscr = curses.initscr()
+
   def show(self, screen: Screen):
     out = str(screen)
-    # TODO relative movement of cursor
-    print("\033[1;1H" + out)
+
+    self._stdscr.addstr(1, 0, out)
+    self._stdscr.refresh()
 
     self._calls += 1
 
   def tearDown(self):
-    pass
+    curses.endwin()
 

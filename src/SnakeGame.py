@@ -12,14 +12,11 @@ from src.util import rand
 DEFAULT_TICKS_PER_SECOND = 5
 
 def _game_worker(game):
-  print('game_worker started')
-
   while not game._stop_game.is_set():
     game.tick()
     game._stop_game.wait(game._speed)
 
   game._worker_stopped.set()
-  print('game_worker stopped')
 
 class Command(Enum):
   UP = 0

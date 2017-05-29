@@ -1,4 +1,4 @@
-from threading import Timer
+from time import sleep
 
 from src.Display import Display
 from src.display.ConsoleOut import ConsoleOut 
@@ -9,10 +9,7 @@ if __name__ == '__main__':
   display = ConsoleOut()
   game = SnakeGame(None, 8, 8)
   try:
-    def onInterval():
-      Timer(1.0, onInterval).start()
-
-      print('tick')
+    for i in range(0, 5):
       game.tick()
 
       if rand(0, 1) == 0:
@@ -26,7 +23,6 @@ if __name__ == '__main__':
         game.invoke(cmd)
 
       display.show(game.screen())
-
-    onInterval()
+      sleep(1)
   finally:
     display.tearDown()
