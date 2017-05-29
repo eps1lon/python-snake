@@ -121,8 +121,6 @@ class SnakeGame(object):
 
     self.onBeforeTick(self)
 
-    print('game tick')
-
     old_snake = self.snake
 
     self.executeCommand()
