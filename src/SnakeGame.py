@@ -2,6 +2,7 @@ from enum import Enum
 from threading import Thread, Event
 
 from src.Display import Display
+from src.display.NullDisplay import NullDisplay
 from src.Point import Point
 from src.Screen import Screen
 from src.screen.TorusScreen import TorusScreen
@@ -40,6 +41,8 @@ class SnakeGame(object):
 
     self.commands = []
     self.apples = []
+
+    self.setDisplay(NullDisplay())
 
   def _setUpThreads(self):
     self._stop_game = Event()
@@ -114,6 +117,8 @@ class SnakeGame(object):
 
     # ate powerup
 
+    self._display.show(self.screen())
+
   def screen(self):
     return TorusScreen(
       self.width, self.height, 
@@ -152,3 +157,12 @@ class SnakeGame(object):
 
   def nextCommand():
     return self.commands[0]
+
+  def setDisplay(self, display):
+    if not isinstance(display, Display):
+      raise TypeError('display needs to implement Display')
+
+    self._display = display
+
+  def tearDown(self):
+    self._display.tearDown()

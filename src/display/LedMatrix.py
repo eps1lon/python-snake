@@ -31,6 +31,11 @@ def _show_worker(matrix, display):
   #print('show worker stopped')
 
 class LedMatrix(Display):
+  @staticmethod
+  def withPins(rows, cols, mode):
+    GPIO.setmode(mode)
+    return LedMatrix(rows, cols)
+
   def __init__(self, rows, cols):
     self.rows = rows
     self.cols = cols
