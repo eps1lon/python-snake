@@ -85,14 +85,17 @@ class SnakeGame(object):
 
   def isRunning(self):
     return not self._stop_game.is_set()
+  
+  def hasEnded(self):
+    return False
 
   # command executed on next #tick
   def invoke(self, cmd):
     self.commands = [cmd]
 
   def executeCommand(self):
-    if self.isRunning() is False:
-      raise Exception('game has stopped')
+    if self.hasEnded() is True:
+      raise Exception('game has ended')
 
     old_snake = self.snake
 
@@ -113,8 +116,8 @@ class SnakeGame(object):
       self.snake = self.snake.forward()
 
   def tick(self):
-    if self.isRunning() is False:
-      raise Exception('game has stopped')
+    if self.hasEnded() is True:
+      raise Exception('game has ended')
 
     self.onBeforeTick(self)
 
