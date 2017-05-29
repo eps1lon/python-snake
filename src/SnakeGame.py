@@ -165,4 +165,5 @@ class SnakeGame(object):
     self._display = display
 
   def tearDown(self):
+    self.stop()
     self._display.tearDown()

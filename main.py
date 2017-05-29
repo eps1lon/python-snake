@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import sys
+from time import sleep
 
 from src.SnakeGame import SnakeGame
 
@@ -49,6 +50,8 @@ def main():
 
     print('game running with {}'.format(display.__class__.__name__))
     game.run()
+
+    sleep(5)
   finally:
     game.tearDown()
 
