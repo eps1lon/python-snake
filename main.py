@@ -2,7 +2,8 @@
 import sys
 from time import sleep
 
-from src.SnakeGame import SnakeGame
+from src.SnakeGame import SnakeGame, Command
+from src.util import rand
 
 from src.display.ConsoleOut import ConsoleOut
 from src.display.NullDisplay import NullDisplay
@@ -36,6 +37,15 @@ def displayFromArg(arg):
   else:
     return NullDisplay()
 
+def randomMovement(game):
+  cmd = [
+    Command.UP,
+    Command.RIGHT,
+    Command.DOWN,
+    Command.LEFT,
+  ][rand(0, 3)]
+
+  game.invoke(cmd)
 def main():
   game = SnakeGame(None, 8, 8)
 
@@ -48,8 +58,10 @@ def main():
     display = displayFromArg(display_arg)
     game.setDisplay(display)
 
-    ticks_per_second = 20
+    ticks_per_second = 10
     game.setTicksPerSecond(ticks_per_second)
+
+    game.onBeforeTick = randomMovement
 
     print('game running on {} with {} ticks/s'.format(
       display.__class__.__name__,
