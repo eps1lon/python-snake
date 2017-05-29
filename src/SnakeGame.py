@@ -45,6 +45,8 @@ class SnakeGame(object):
     self.setTicksPerSecond(DEFAULT_TICKS_PER_SECOND)
 
   def _setUpThreads(self):
+    self._worker_thread = None
+
     self._stop_game = Event()
     self._stop_game.set()
     self._worker_stopped = Event()
@@ -56,13 +58,14 @@ class SnakeGame(object):
     self._stop_game.clear()
     self._worker_stopped.clear()
 
-    Thread(
+    self._worker_thread = Thread(
       target=_game_worker,
       kwargs={
         'game': self,
       },
       name='game_worker'
-    ).start()
+    )
+    self._worker_thread.start()
 
   def pause(self):
     self._stop_game.set()
@@ -170,3 +173,11 @@ class SnakeGame(object):
   def tearDown(self):
     self.stop()
     self._display.tearDown()
+
+  # blocks until thread for game ticks stops
+  def join(self):
+    if self._worker_thread is None:
+      return
+    else:
+      self._worker_thread.join()
+      return
