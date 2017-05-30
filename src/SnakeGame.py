@@ -9,7 +9,12 @@ from src.screen.TorusScreen import TorusScreen
 from src.Snake import Snake, InvalidMovement
 from src.util import rand
 
+CHANCE_MAX_ROLL = 1e9
+MAX_APPLES = 1
+
+# default config
 DEFAULT_TICKS_PER_SECOND = 5
+DEFAULT_APPLE_CHANCE = CHANCE_MAX_ROLL # 100%
 
 def _game_worker(game):
   while not game._stop_game.is_set():
@@ -41,6 +46,7 @@ class SnakeGame(object):
 
     self.setDisplay(NullDisplay())
     self.setTicksPerSecond(DEFAULT_TICKS_PER_SECOND)
+    self.setAppleChance(DEFAULT_APPLE_CHANCE)
 
   def _setUpThreads(self):
     self._worker_thread = None
@@ -126,7 +132,14 @@ class SnakeGame(object):
 
     self.executeCommand()
 
-    # ate powerup
+    # TODO ate powerup?
+
+    if len(self.apples) < MAX_APPLES and self.rollApple():
+      apple = self.createRandomApple()
+      if apple is not None:
+        self.apples.append(apple)
+
+    # display
     self._display.show(self.screen())
     self._display.debug(str(command))
 
@@ -142,6 +155,9 @@ class SnakeGame(object):
     ).occupiedArea() == (
       TorusScreen(self.width, self.height, [self.snake.body])
     ).occupiedArea
+
+  def rollApple(self):
+    return self._apple_chance >= rand(1, CHANCE_MAX_ROLL)
 
   # creates a apple at a random pos
   def createRandomApple(self):
@@ -180,6 +196,9 @@ class SnakeGame(object):
 
   def setTicksPerSecond(self, ticks):
     self._speed = 1 / ticks
+
+  def setAppleChance(self, chance):
+    self._apple_chance = chance
 
   def tearDown(self):
     self.stop()
