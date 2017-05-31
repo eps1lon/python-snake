@@ -23,6 +23,9 @@ class Point(object):
   def additiveInverseOf(self, other):
     return self.add(other) == ZERO
 
+  def inverse(self):
+    return Point(-self.x, -self.y)
+
   def __eq__(self, other):
     if type(self) is type(other):
       return self.x == other.x and self.y == other.y
@@ -31,6 +34,9 @@ class Point(object):
 
   def __str__(self):
     return '({}, {})'.format(self.x, self.y)
+
+  def __repr__(self):
+    return str(self)
 
   def offset(self):
     return self

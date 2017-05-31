@@ -42,5 +42,12 @@ class Screen(Shape):
 
     return matrix
 
+  def map(self, point, shape_width=1, shape_height=1):
+    return self._point_mapping(
+      point,
+      self.width, self.height,
+      shape_width, shape_height
+    )
+
   def addShape(self, shape):
     self._shapes.append(shape)

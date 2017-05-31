@@ -10,6 +10,7 @@ from src.util import rand
 
 from src.display.ConsoleOut import ConsoleOut
 from src.display.NullDisplay import NullDisplay
+from src.display.ScrollingConsole import ScrollingConsole
 try:
   import RPi.GPIO as GPIO
   from src.display.LedMatrix import LedMatrix
@@ -38,7 +39,7 @@ def displayFromArg(arg):
   elif arg == ARG_DISPLAY_CONSOLE:
     return ConsoleOut()
   else:
-    return NullDisplay()
+    return ScrollingConsole()
 
 def randomMovement(game):
   cmd = [
@@ -51,7 +52,7 @@ def randomMovement(game):
   game.invoke(cmd)
 def main():
   game = SnakeGame(
-    Snake.withLength(Point(0, 0), plane.right, 5),
+    Snake.withLength(Point(0, 0), plane.right, 3),
     8, 8
   )
 
@@ -71,7 +72,6 @@ def main():
 
     print('game running on {} with {} ticks/s'.format(
       display.__class__.__name__,
-      
       ticks_per_second
     ))
     game.run()

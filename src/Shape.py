@@ -12,7 +12,7 @@ class Shape(metaclass=ABCMeta):
 
     for y, row in enumerate(self.occupiedArea()):
       for x, value in enumerate(row):
-        points.append([Point(x, y).add(self.offset()), value])
+        points.append((Point(x, y).add(self.offset()), value))
 
     return points
 

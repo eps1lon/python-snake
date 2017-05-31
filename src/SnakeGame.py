@@ -16,10 +16,19 @@ MAX_APPLES = 1
 DEFAULT_TICKS_PER_SECOND = 5
 DEFAULT_APPLE_CHANCE = CHANCE_MAX_ROLL # 100%
 
+inf = float('inf')
+
 def _game_worker(game):
+  game.ticks_ran = 0
+
   while not game._stop_game.is_set():
     game.tick()
+    game.ticks_ran += 1
+
     game._stop_game.wait(game._speed)
+
+    if game.ticks_ran >= game.run_for_ticks:
+      game._stop_game.set()
 
   game._worker_stopped.set()
 
@@ -59,12 +68,13 @@ class SnakeGame(object):
   def _setUpCallbacks(self):
     self.onBeforeTick = lambda game: None
 
-  def run(self):
+  def run(self, for_ticks = inf):
     self.pause()
 
     self._stop_game.clear()
     self._worker_stopped.clear()
 
+    self.run_for_ticks = for_ticks
     self._worker_thread = Thread(
       target=_game_worker,
       kwargs={
@@ -100,8 +110,6 @@ class SnakeGame(object):
     if self.hasEnded() is True:
       raise Exception('game has ended')
 
-    old_snake = self.snake
-
     if len(self.commands) > 0:
       cmd = self.commands.pop(0)
     else:
@@ -132,16 +140,38 @@ class SnakeGame(object):
 
     self.executeCommand()
 
-    # TODO ate powerup?
+    # ate powerup
+    ate_apple = self.eating_apple()
+    if ate_apple is not None:
+      self.apples.remove(ate_apple)
+
+      # restore tail
+      self.snake.body = self.snake.body \
+        .turnTailTo(old_snake.tail().norm().inverse()) \
+        .sanitize()
+
+    #self._display.debug('ate_apple {}'.format(str(ate_apple)))
 
     if len(self.apples) < MAX_APPLES and self.rollApple():
-      apple = self.createRandomApple()
+      #apple = self.createRandomApple()
+      apple = self.createTrivialApple()
       if apple is not None:
         self.apples.append(apple)
+
+      #self._display.debug('add apple: {}'.format(apple))
 
     # display
     self._display.show(self.screen())
     self._display.debug(str(command))
+
+  def eating_apple(self):
+    actual_mouth = self.screen().map(self.snake.mouth())
+
+    for apple in self.apples:
+      if actual_mouth == apple:
+        return apple
+
+    return None
 
   def screen(self):
     return TorusScreen(
@@ -177,8 +207,7 @@ class SnakeGame(object):
       trivial = self.snake.head().end.add(delta)
 
       if self.collidesWithSnake(trivial) is False:
-        self.apples.append(trivial)
-        return trivial
+        return self.screen().map(trivial)
 
     return None
 

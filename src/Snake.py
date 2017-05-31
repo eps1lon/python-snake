@@ -26,6 +26,9 @@ class Snake(object):
 
     self.body = body
 
+  def mouth(self):
+    return self.head().end
+
   def head(self):
     return self.body.head()
 
@@ -71,7 +74,7 @@ class Snake(object):
       prolonged_body = self.body.turnTo(new_dir.delta)
 
       # shorten tail
-      new_body = prolonged_body.shorten();
+      new_body = prolonged_body.shorten()
 
       return Snake(new_body.sanitize())
     else:

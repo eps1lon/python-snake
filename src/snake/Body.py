@@ -92,6 +92,20 @@ class Body(Shape):
         self.head().end.add(delta),
       )])
 
+  def turnTailTo(self, delta):
+    if delta.distance(Point(0, 0)) != 1:
+      raise Exception('no normalized delta')
+
+    norm = self.tail().norm()
+
+    if norm is not None and norm == delta is True:
+      raise Exception('cant grow inwards')
+    else:
+      return Body([Segment(
+        self.tail().start.add(delta),
+        self.tail().start
+      )] + self.segments)
+
   def dimensions(self):
     def reduceDimensions(dimensions, segment):
       return [
@@ -132,3 +146,6 @@ class Body(Shape):
   def offset(self):
     dimensions = self.dimensions()
     return Point(dimensions[0], dimensions[1])
+  
+  def length(self):
+    return len([value for point, value in self.pointsList() if value > 0])
