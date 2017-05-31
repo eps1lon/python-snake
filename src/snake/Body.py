@@ -32,10 +32,15 @@ class Body(Shape):
 
   # removes empty ones: |--->|>|-> => |---->
   def removeEmpty(self): 
-    return Body(list(filter(
-      lambda segment: segment.isEmpty() == False,
-      self.segments
-    )))
+    # dont filter empty if only consisting of single segment
+    if len(self.segments) <= 1:
+      # return copy of segments
+      return Body(list(self.segments))
+    else:
+      return Body(list(filter(
+        lambda segment: segment.isEmpty() == False,
+        self.segments
+      )))
 
   # connects redundant segments: |--->|--> => |----->
   def connectReduntant(self):
