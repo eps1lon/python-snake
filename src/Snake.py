@@ -16,8 +16,17 @@ class Snake(object):
 
   @staticmethod
   def withLength(start, dir, length):
+    if length < 1:
+      raise Exception('cant create empty snakes')
+
     return Snake(Body([
-      Segment(start, start.add(Point(dir.delta.x * length, dir.delta.y * length))),
+      Segment(
+        start, 
+        start.add(Point(
+          dir.delta.x * (length - 1),
+          dir.delta.y * (length - 1)
+        ))
+      ),
     ]))
 
   def __init__(self, body = default_body):
