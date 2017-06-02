@@ -1,6 +1,7 @@
 from enum import Enum
-from threading import Thread, Event
+from threading import Lock
 
+from src.StoppableThread import StoppableThread
 from src.Display import Display
 from src.display.NullDisplay import NullDisplay
 from src.Point import Point
@@ -18,19 +19,15 @@ DEFAULT_APPLE_CHANCE = CHANCE_MAX_ROLL # 100%
 
 inf = float('inf')
 
-def _game_worker(game):
-  game.ticks_ran = 0
-
-  while not game._stop_game.is_set():
+def _game_worker(game, **kwargs):
+  if game.ticks_ran >= game.run_for_ticks:
+    # dont block or we will deadlock ourselve
+    game.stop(blocking=False)
+  else:
     game.tick()
     game.ticks_ran += 1
 
-    game._stop_game.wait(game._speed)
-
-    if game.ticks_ran >= game.run_for_ticks:
-      game._stop_game.set()
-
-  game._worker_stopped.set()
+    game.wait(game._speed)
 
 class Command(Enum):
   UP = 0
@@ -38,8 +35,15 @@ class Command(Enum):
   DOWN = 2
   LEFT = 3
 
-class SnakeGame(object):
+class SnakeGame(StoppableThread):
   def __init__(self, snake = None, width = 16, height = 16):
+    super().__init__(
+      target=_game_worker,
+      kwargs={
+        'game': self
+      }
+    )
+
     if snake is None:
       snake = Snake()
     
@@ -58,39 +62,21 @@ class SnakeGame(object):
     self.setAppleChance(DEFAULT_APPLE_CHANCE)
 
   def _setUpThreads(self):
-    self._worker_thread = None
-
-    self._stop_game = Event()
-    self._stop_game.set()
-    self._worker_stopped = Event()
-    self._worker_stopped.set()
+    self.command_lock = Lock()
 
   def _setUpCallbacks(self):
     self.onBeforeTick = lambda game: None
 
-  def run(self, for_ticks = inf):
-    self.pause()
-
-    self._stop_game.clear()
-    self._worker_stopped.clear()
+  def start(self, for_ticks = inf):
+    super().stop(blocking=True)
 
     self.run_for_ticks = for_ticks
-    self._worker_thread = Thread(
-      target=_game_worker,
-      kwargs={
-        'game': self,
-      },
-      name='game_worker'
-    )
-    self._worker_thread.start()
+    self.ticks_ran = 0
 
-  def pause(self):
-    self._stop_game.set()
-
-    self._worker_stopped.wait()
+    super().start()
 
   def stop(self):
-    self.pause()
+    super().stop(blocking=True)
     self.reset()
 
   def reset(self):
@@ -232,11 +218,3 @@ class SnakeGame(object):
   def tearDown(self):
     self.stop()
     self._display.tearDown()
-
-  # blocks until thread for game ticks stops
-  def join(self):
-    if self._worker_thread is None:
-      return
-    else:
-      self._worker_thread.join()
-      return

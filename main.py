@@ -74,7 +74,7 @@ def main():
       display.__class__.__name__,
       ticks_per_second
     ))
-    game.run()
+    game.start()
 
     game.join()
   finally:
