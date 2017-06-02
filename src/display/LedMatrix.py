@@ -1,8 +1,8 @@
 import RPi.GPIO as GPIO
-from threading import Thread, Event
 
 from src.Display import Display
 from src.Screen import Screen
+from src.StoppableThread import StoppableThread
 
 def pinOn(pin):
   GPIO.output(pin, GPIO.HIGH)
@@ -22,13 +22,7 @@ def displayMatrix(matrix, rows, cols):
     pinOff(rows[i])
 
 def _show_worker(matrix, display):
-  #print('show worker called')
-
-  while display._do_show.is_set():
-    displayMatrix(matrix, display.rows, display.cols)
-
-  display._worker_stopped.set()
-  #print('show worker stopped')
+  displayMatrix(matrix, display.rows, display.cols)
 
 class LedMatrix(Display):
   @staticmethod
@@ -40,11 +34,8 @@ class LedMatrix(Display):
     self.rows = rows
     self.cols = cols
 
-    self._do_show = Event()
-    self._worker_stopped = Event()
-    self._worker_stopped.set()
-
     self._openMatrix()
+    self._worker = None
 
   def tearDown(self):
     self.clear()
@@ -53,25 +44,15 @@ class LedMatrix(Display):
   def show(self, screen):
     self.clear()
 
-    self._do_show.set()
-    self._worker_stopped.clear()
-
-    Thread(
-      target=_show_worker,
-      kwargs={
-        'display': self,
-        'matrix': screen.occupiedArea()
-      },
-      name='show_worker'
-    ).start()
+    self._worker = self._setup_worker(screen)
+    self._worker.start()
 
   def debug(self, text):
     print(text)
 
   def clear(self):
-    self._do_show.clear()
-
-    self._worker_stopped.wait()
+    if self._worker is not None:
+      self._worker.stop(blocking=True)
 
     self.reset()
 
@@ -105,3 +86,12 @@ class LedMatrix(Display):
 
   def disableCol(self, x):
     pinOff(self.cols[x])
+
+  def _setup_worker(self, screen):
+    return StoppableThread(
+      target=_show_worker,
+      kwargs={
+        'matrix': screen.occupiedArea()
+        'display': self
+      }
+    )
