@@ -6,7 +6,6 @@ from src.plane import plane
 from src.Point import Point
 from src.Snake import Snake
 from src.SnakeGame import SnakeGame, Command
-from src.util import rand
 
 from src.display.ConsoleOut import ConsoleOut
 from src.display.NullDisplay import NullDisplay
@@ -26,7 +25,8 @@ except RuntimeError:
   LED_MATRIX_AVAILABLE = False
 
 from src.controls.NullControls import NullControls
-from src.controls.SnakeKeyboardControls import SnakeKeyboardControls, _worker
+from src.controls.SnakeKeyboardControls import SnakeKeyboardControls
+from src.controls.RandomCommands import RandomCommands
 try:
   import RPi.GPIO as GPIO
   from src.controls.Gpio import Gpio as GpioControl
@@ -49,6 +49,7 @@ ARG_DISPLAY_SCROLLING = 'scroll'
 # possible args for control mode
 ARG_CONTROL_KEYBOARD = 'keyboard'
 ARG_CONTROL_GPIO = 'gpio'
+ARG_CONTROL_RANDOM = 'random'
 
 def displayFromArg(arg):
   if arg == ARG_DISPLAY_LED:
@@ -73,18 +74,10 @@ def controlsFromArg(arg):
     else:
       print('Warning: no GpioControls available')
       return NullControls()
+  elif arg == ARG_CONTROL_RANDOM:
+    return RandomCommands()
   else:
     return NullControls()
-
-def randomMovement(game):
-  cmd = [
-    Command.UP,
-    Command.RIGHT,
-    Command.DOWN,
-    Command.LEFT,
-  ][rand(0, 3)]
-
-  game.invoke(cmd)
 
 def main():
   game = SnakeGame(
@@ -114,9 +107,6 @@ def main():
     # game speed
     ticks_per_second = 1
     game.setTicksPerSecond(ticks_per_second)
-
-    # testing 
-    # game.onBeforeTick = randomMovement
 
     # start game
     print('game running on {} with {} ticks/s'.format(
