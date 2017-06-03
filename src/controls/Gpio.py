@@ -20,11 +20,9 @@ class Gpio(Controls):
     # create closure for self
     def callback(channel):
       if channel == self._left:
-        # TODO turnleft
-        pass
+        self._game.invoke(Command.TURN_LEFT)
       elif channel == self._right:
-        # TODO turnright
-        pass
+        self._game.invoke(Command.TURN_RIGHT)
       else:
         print('unrecognized pin `{}`'.format(pin))
 

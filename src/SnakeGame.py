@@ -36,6 +36,8 @@ class Command(Enum):
   RIGHT = 1
   DOWN = 2
   LEFT = 3
+  TURN_LEFT = 4
+  TURN_RIGHT = 5
 
 class SnakeGame(StoppableThread):
   def __init__(self, snake = None, width = 16, height = 16):
@@ -109,6 +111,7 @@ class SnakeGame(StoppableThread):
       cmd = None
 
     try:
+      # movement commands
       if cmd is Command.UP:
         self.snake = self.snake.up()
       elif cmd is Command.RIGHT:
@@ -117,6 +120,10 @@ class SnakeGame(StoppableThread):
         self.snake = self.snake.down()
       elif cmd is Command.LEFT:
         self.snake = self.snake.left()
+      elif cmd is Command.TURN_LEFT:
+        self.snake = self.snake.turnLeft()
+      elif cmd is Command.TURN_RIGHT:
+        self.snake = self.snake.turnRight()
       else:
         self.snake = self.snake.forward()
     except InvalidMovement:

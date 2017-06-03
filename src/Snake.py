@@ -56,6 +56,20 @@ class Snake(object):
   def left(self):
     return self._moveTo(plane.left)
 
+  def turnLeft(self):
+    direction = self.direction()
+    if direction is None:
+      raise InvalidMovement('cant turn if no direction')
+    else:
+      return self._moveTo(direction.left)
+
+  def turnRight(self):
+    direction = self.direction()
+    if direction is None:
+      raise InvalidMovement('cant turn if no direction')
+    else:
+      return self._moveTo(direction.right)
+
   def direction(self):
     return self.head().direction(plane)
 
