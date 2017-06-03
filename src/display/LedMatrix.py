@@ -66,7 +66,7 @@ class LedMatrix(Display):
       GPIO.setup(pin, GPIO.OUT)
       
   def _closeMatrix(self):
-    GPIO.cleanup()
+    GPIO.cleanup(self._pins)
 
   def reset(self):
     for pin in self._pins:
