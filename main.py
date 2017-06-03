@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import sys
+import argparse
 from time import sleep
 
 from src.plane import plane
@@ -51,6 +51,24 @@ ARG_CONTROL_KEYBOARD = 'keyboard'
 ARG_CONTROL_GPIO = 'gpio'
 ARG_CONTROL_RANDOM = 'random'
 
+parser = argparse.ArgumentParser(description='snake written in python')
+parser.add_argument(
+  '-d', '--display',
+  choices=[ARG_DISPLAY_CONSOLE, ARG_DISPLAY_LED, ARG_DISPLAY_SCROLLING],
+  help='LED only available on raspberry'
+)
+parser.add_argument(
+  '-c', '--controls',
+  choices=[ARG_CONTROL_KEYBOARD, ARG_CONTROL_GPIO, ARG_CONTROL_RANDOM],
+  help='random is computer, others are players'
+)
+parser.add_argument(
+  '-s', '--speed',
+  type=int,
+  default=1,
+  help='in ticks per second'
+)
+
 def displayFromArg(arg):
   if arg == ARG_DISPLAY_LED:
     if LED_MATRIX_AVAILABLE:
@@ -85,27 +103,19 @@ def main():
     8, 8
   )
 
-  try:
-    display_arg = sys.argv[1]
-  except IndexError:
-    display_arg = None
-
-  try:
-    control_arg = sys.argv[2]
-  except IndexError:
-    control_arg = None
+  args = parser.parse_args()
 
   try:
     # display setup
-    display = displayFromArg(display_arg)
+    display = displayFromArg(args.display)
     game.setDisplay(display)
 
     # controls setup
-    controls = controlsFromArg(control_arg)
+    controls = controlsFromArg(args.controls)
     game.setControls(controls)
 
     # game speed
-    ticks_per_second = 1
+    ticks_per_second = args.speed
     game.setTicksPerSecond(ticks_per_second)
 
     # start game
