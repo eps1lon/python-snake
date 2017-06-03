@@ -4,6 +4,8 @@ from threading import Lock
 from src.StoppableThread import StoppableThread
 from src.Display import Display
 from src.display.NullDisplay import NullDisplay
+from src.Controls import Controls
+from src.controls.NullControls import NullControls
 from src.Point import Point
 from src.Screen import Screen
 from src.screen.TorusScreen import TorusScreen
@@ -58,6 +60,7 @@ class SnakeGame(StoppableThread):
     self.apples = []
 
     self.setDisplay(NullDisplay())
+    self.setControls(NullControls())
     self.setTicksPerSecond(DEFAULT_TICKS_PER_SECOND)
     self.setAppleChance(DEFAULT_APPLE_CHANCE)
 
@@ -73,11 +76,15 @@ class SnakeGame(StoppableThread):
     self.run_for_ticks = for_ticks
     self.ticks_ran = 0
 
+    self._controls.start()
+
     super().start()
 
   def stop(self):
     super().stop(blocking=True)
     self.reset()
+
+    self._controls.stop(blocking=False)
 
   def reset(self):
     pass
@@ -209,6 +216,13 @@ class SnakeGame(StoppableThread):
 
     self._display = display
 
+  def setControls(self, controls):
+    if not isinstance(controls, Controls):
+      raise TypeError('controls needs to implement Controls')
+
+    self._controls = controls
+    controls.setGame(self)
+
   def setTicksPerSecond(self, ticks):
     self._speed = 1 / ticks
 
@@ -218,3 +232,4 @@ class SnakeGame(StoppableThread):
   def tearDown(self):
     self.stop()
     self._display.tearDown()
+    self._controls.tearDown()

@@ -25,9 +25,15 @@ try:
 except RuntimeError:
   LED_MATRIX_AVAILABLE = False
 
+from src.controls.NullControls import NullControls
+from src.controls.SnakeKeyboardControls import SnakeKeyboardControls, _worker
+
 # possible args for display mode
 ARG_DISPLAY_LED = 'led'
 ARG_DISPLAY_CONSOLE = 'console'
+
+# possible args for control mode
+ARG_CONTROL_KEYBOARD = 'keyboard'
 
 def displayFromArg(arg):
   if arg == ARG_DISPLAY_LED:
@@ -41,6 +47,12 @@ def displayFromArg(arg):
   else:
     return ScrollingConsole()
 
+def controlsFromArg(arg):
+  if arg == ARG_CONTROL_KEYBOARD:
+    return SnakeKeyboardControls()
+  else:
+    return NullControls()
+
 def randomMovement(game):
   cmd = [
     Command.UP,
@@ -50,7 +62,7 @@ def randomMovement(game):
   ][rand(0, 3)]
 
   game.invoke(cmd)
-  
+
 def main():
   game = SnakeGame(
     Snake.withLength(Point(0, 0), plane.right, 3),
@@ -63,16 +75,25 @@ def main():
     display_arg = None
 
   try:
+    control_arg = sys.argv[2]
+  except IndexError:
+    control_arg = None
+
+  try:
     # display setup
     display = displayFromArg(display_arg)
     game.setDisplay(display)
+
+    # controls setup
+    controls = controlsFromArg(control_arg)
+    game.setControls(controls)
 
     # game speed
     ticks_per_second = 1
     game.setTicksPerSecond(ticks_per_second)
 
     # testing 
-    game.onBeforeTick = randomMovement
+    # game.onBeforeTick = randomMovement
 
     # start game
     print('game running on {} with {} ticks/s'.format(
