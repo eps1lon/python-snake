@@ -38,7 +38,11 @@ class Screen(Shape):
             shape_width, shape_height,
           )
 
-          matrix[mapped.y][mapped.x] += value
+          try:
+            matrix[mapped.y][mapped.x] += value
+          except IndexError:
+            print(mapped, x, dx, y, dy, width, height)
+            raise IndexError()
 
     return matrix
 

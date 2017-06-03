@@ -4,7 +4,7 @@ from src.Shape import Shape
 
 def torusMod(n, size):
   if n < 0:
-    return size - abs(n) % size
+    return (size - abs(n)) % size
   else:
     return n % size
 
