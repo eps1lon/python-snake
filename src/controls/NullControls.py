@@ -1,8 +1,8 @@
 from src.Controls import Controls
 
-def _worker(controls, **kwargs):
+def _worker(controls):
   # dont do anything, just wait for stop
-  controls._stop.wait()
+  controls.wait()
 
 class NullControls(Controls):
   def __init__(self):

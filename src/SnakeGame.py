@@ -21,7 +21,7 @@ DEFAULT_APPLE_CHANCE = CHANCE_MAX_ROLL # 100%
 
 inf = float('inf')
 
-def _game_worker(game, **kwargs):
+def _game_worker(game):
   if game.ticks_ran >= game.run_for_ticks:
     # dont block or we will deadlock ourselve
     game.stop(blocking=False)

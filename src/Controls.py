@@ -8,5 +8,5 @@ class Controls(StoppableThread, metaclass=ABCMeta):
     pass
 
   @abstractmethod
-  def tearDown(self, game):
+  def tearDown(self):
     pass

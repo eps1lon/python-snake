@@ -21,7 +21,7 @@ def displayMatrix(matrix, rows, cols):
 
     pinOff(rows[i])
 
-def _show_worker(matrix, display):
+def _show_worker(display, matrix):
   displayMatrix(matrix, display.rows, display.cols)
 
 class LedMatrix(Display):
@@ -91,7 +91,7 @@ class LedMatrix(Display):
     return StoppableThread(
       target=_show_worker,
       kwargs={
-        'matrix': screen.occupiedArea()
+        'matrix': screen.occupiedArea(),
         'display': self
       }
     )
