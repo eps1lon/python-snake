@@ -44,6 +44,7 @@ except RuntimeError:
 # possible args for display mode
 ARG_DISPLAY_LED = 'led'
 ARG_DISPLAY_CONSOLE = 'console'
+ARG_DISPLAY_SCROLLING = 'scroll'
 
 # possible args for control mode
 ARG_CONTROL_KEYBOARD = 'keyboard'
@@ -58,8 +59,10 @@ def displayFromArg(arg):
       return NullDisplay()
   elif arg == ARG_DISPLAY_CONSOLE:
     return ConsoleOut()
-  else:
+  elif arg == ARG_DISPLAY_SCROLLING:
     return ScrollingConsole()
+  else:
+    return NullDisplay()
 
 def controlsFromArg(arg):
   if arg == ARG_CONTROL_KEYBOARD:
