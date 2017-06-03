@@ -50,6 +50,7 @@ def randomMovement(game):
   ][rand(0, 3)]
 
   game.invoke(cmd)
+  
 def main():
   game = SnakeGame(
     Snake.withLength(Point(0, 0), plane.right, 3),
@@ -62,20 +63,25 @@ def main():
     display_arg = None
 
   try:
+    # display setup
     display = displayFromArg(display_arg)
     game.setDisplay(display)
 
+    # game speed
     ticks_per_second = 1
     game.setTicksPerSecond(ticks_per_second)
 
+    # testing 
     game.onBeforeTick = randomMovement
 
+    # start game
     print('game running on {} with {} ticks/s'.format(
       display.__class__.__name__,
       ticks_per_second
     ))
     game.start()
 
+    # block until game ends (interrupt, game over etc)
     game.join()
   finally:
     game.tearDown()
