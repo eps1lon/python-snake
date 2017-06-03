@@ -27,6 +27,19 @@ except RuntimeError:
 
 from src.controls.NullControls import NullControls
 from src.controls.SnakeKeyboardControls import SnakeKeyboardControls, _worker
+try:
+  import RPi.GPIO as GPIO
+  from src.controls.Gpio import Gpio as GpioControl
+
+  # led matrix pins
+  PIN_MODE_CONTROL = GPIO.BOARD
+  INPUT_LEFT = 38
+  INPUT_RIGHT = 40
+
+  GPIO_CONTROL_AVAILABLE = True
+# throws runtimeerror if not raspberry environment
+except RuntimeError:
+  GPIO_CONTROL_AVAILABLE = False
 
 # possible args for display mode
 ARG_DISPLAY_LED = 'led'
@@ -34,6 +47,7 @@ ARG_DISPLAY_CONSOLE = 'console'
 
 # possible args for control mode
 ARG_CONTROL_KEYBOARD = 'keyboard'
+ARG_CONTROL_GPIO = 'gpio'
 
 def displayFromArg(arg):
   if arg == ARG_DISPLAY_LED:
@@ -50,6 +64,12 @@ def displayFromArg(arg):
 def controlsFromArg(arg):
   if arg == ARG_CONTROL_KEYBOARD:
     return SnakeKeyboardControls()
+  elif arg == ARG_CONTROL_GPIO:
+    if GPIO_CONTROL_AVAILABLE:
+      return GpioControl(INPUT_LEFT, INPUT_RIGHT, PIN_MODE_CONTROL)
+    else:
+      print('Warning: no GpioControls available')
+      return NullControls()
   else:
     return NullControls()
 
