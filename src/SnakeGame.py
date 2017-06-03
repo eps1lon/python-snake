@@ -146,8 +146,8 @@ class SnakeGame(StoppableThread):
     #self._display.debug('ate_apple {}'.format(str(ate_apple)))
 
     if len(self.apples) < MAX_APPLES and self.rollApple():
-      #apple = self.createRandomApple()
-      apple = self.createTrivialApple()
+      apple = self.createRandomApple()
+      
       if apple is not None:
         self.apples.append(apple)
 

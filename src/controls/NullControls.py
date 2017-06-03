@@ -16,5 +16,5 @@ class NullControls(Controls):
   def setGame(self, game):
     pass
 
-  def tearDown(self, game):
+  def tearDown(self):
     pass
