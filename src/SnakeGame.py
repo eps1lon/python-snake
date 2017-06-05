@@ -1,5 +1,7 @@
 from enum import Enum
 from threading import Lock
+from time import sleep
+from math import ceil
 
 from src.StoppableThread import StoppableThread
 from src.Display import Display
@@ -11,13 +13,19 @@ from src.Screen import Screen
 from src.screen.TorusScreen import TorusScreen
 from src.Snake import Snake, InvalidMovement
 from src.util import rand
+from src.shapes.SimpleShape import SimpleShape
 
 CHANCE_MAX_ROLL = 1e9
 MAX_APPLES = 1
+# duration of start screen in [s]
+START_SCREEN_DURATION = 5
+# sleep [s] before reset
+COLLISION_TIMEOUT = 5
 
 # default config
 DEFAULT_TICKS_PER_SECOND = 5
 DEFAULT_APPLE_CHANCE = CHANCE_MAX_ROLL # 100%
+DEFAULT_SNAKE = Snake()
 
 inf = float('inf')
 
@@ -40,16 +48,13 @@ class Command(Enum):
   TURN_RIGHT = 5
 
 class SnakeGame(StoppableThread):
-  def __init__(self, snake = None, width = 16, height = 16):
+  def __init__(self, snake = DEFAULT_SNAKE, width = 16, height = 16):
     super().__init__(
       target=_game_worker,
       kwargs={
         'game': self
       }
     )
-
-    if snake is None:
-      snake = Snake()
     
     self._setUpThreads()
     self._setUpCallbacks()
@@ -75,6 +80,8 @@ class SnakeGame(StoppableThread):
   def start(self, for_ticks = inf):
     super().stop(blocking=True)
 
+    self.resetGame()
+
     self.run_for_ticks = for_ticks
     self.ticks_ran = 0
 
@@ -84,12 +91,15 @@ class SnakeGame(StoppableThread):
 
   def stop(self):
     super().stop(blocking=True)
-    self.reset()
 
     self._controls.stop(blocking=False)
 
-  def reset(self):
-    pass
+  def resetGame(self):
+    self.showStartScreen()
+
+    # reset game logic
+    self.snake = DEFAULT_SNAKE
+    self.apples = []
 
   def isRunning(self):
     return not self._stop_game.is_set()
@@ -159,6 +169,10 @@ class SnakeGame(StoppableThread):
         self.apples.append(apple)
 
       #self._display.debug('add apple: {}'.format(apple))
+
+    if self.snake.body.collidesWithItself() is True:
+      sleep(COLLISION_TIMEOUT)
+      self.resetGame()
 
     # display
     self._display.show(self.screen())
@@ -240,3 +254,20 @@ class SnakeGame(StoppableThread):
     self.stop()
     self._display.tearDown()
     self._controls.tearDown()
+
+  def showStartScreen(self):
+    steps = ceil(min(self.width, self.height) / 2) + 1
+    sleep_step = START_SCREEN_DURATION / steps
+
+    for delta in range(0, steps):
+      border_top = [0] * self.width
+      center = [0] * delta + [1] * (self.width - 2 * delta) + [0] * delta
+
+      area = (
+        [border_top] * delta
+        + [center] * (self.height - 2 * delta)
+        + [border_top] * delta
+      )
+
+      self._display.show(SimpleShape(area))
+      sleep(sleep_step)

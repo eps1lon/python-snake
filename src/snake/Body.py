@@ -154,3 +154,6 @@ class Body(Shape):
   
   def length(self):
     return len([value for point, value in self.pointsList() if value > 0])
+
+  def collidesWithItself(self):
+    return any(value for row in self.occupiedArea() for value in row if value > 1)    

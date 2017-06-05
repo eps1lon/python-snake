@@ -191,3 +191,22 @@ class TestValidity(unittest.TestCase):
       self.connecting_segments[0],
       self.connecting_segments[2],
     ]).isValid())
+
+  def testCollision(self):
+    a = Point(0, 0)
+    b = Point(2, 0)
+    c = Point(2, 2)
+    d = Point(0, 2)
+
+    self.assertFalse(Body([
+      Segment(a, b),
+      Segment(b, c),
+      Segment(c, d),
+    ]).collidesWithItself())
+
+    self.assertTrue(Body([
+      Segment(a, b),
+      Segment(b, c),
+      Segment(c, d),
+      Segment(d, a),
+    ]).collidesWithItself())
