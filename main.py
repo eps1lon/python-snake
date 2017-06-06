@@ -69,11 +69,11 @@ parser.add_argument(
   help='in ticks per second'
 )
 parser.add_argument(
-  '--skip',
+  '--skip-intro',
   action='store_true',
-  default=False,
   help='skip start screen'
 )
+parser.set_defaults(skip_intro=False)
 
 def displayFromArg(arg):
   if arg == ARG_DISPLAY_LED:
@@ -109,8 +109,6 @@ def main():
     8, 8
   )
 
-  game.skipIntro()
-
   args = parser.parse_args()
 
   try:
@@ -125,6 +123,10 @@ def main():
     # game speed
     ticks_per_second = args.speed
     game.setTicksPerSecond(ticks_per_second)
+
+    # skip intro?
+    if args.skip_intro:
+      game.skipIntro()
 
     # start game
     print('game running on {} with {} ticks/s'.format(
