@@ -68,6 +68,12 @@ parser.add_argument(
   default=1,
   help='in ticks per second'
 )
+parser.add_argument(
+  '--skip',
+  action='store_true',
+  default=False,
+  help='skip start screen'
+)
 
 def displayFromArg(arg):
   if arg == ARG_DISPLAY_LED:
@@ -102,6 +108,8 @@ def main():
     Snake.withLength(Point(0, 0), plane.right, 3),
     8, 8
   )
+
+  game.skipIntro()
 
   args = parser.parse_args()
 

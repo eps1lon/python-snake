@@ -55,6 +55,8 @@ class SnakeGame(StoppableThread):
         'game': self
       }
     )
+
+    self._skip_intro = False
     
     self._setUpThreads()
     self._setUpCallbacks()
@@ -95,7 +97,8 @@ class SnakeGame(StoppableThread):
     self._controls.stop(blocking=False)
 
   def resetGame(self):
-    self.showStartScreen()
+    if not self._skip_intro:
+      self.showStartScreen()
 
     # reset game logic
     self.snake = DEFAULT_SNAKE
@@ -271,3 +274,6 @@ class SnakeGame(StoppableThread):
 
       self._display.show(SimpleShape(area))
       sleep(sleep_step)
+
+  def skipIntro(self):
+    self._skip_intro = True
