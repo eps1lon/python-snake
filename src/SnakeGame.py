@@ -48,13 +48,19 @@ class Command(Enum):
   TURN_RIGHT = 5
 
 class SnakeGame(StoppableThread):
-  def __init__(self, snake = DEFAULT_SNAKE, width = 16, height = 16):
+  def __init__(self, snake = None, width = 16, height = 16):
     super().__init__(
       target=_game_worker,
       kwargs={
         'game': self
       }
     )
+
+    # legacy, it should be the last param to allow shorter call sig
+    # but we had it on None by default and then manually adjust it
+    # for future use it as last and pass default in signature
+    if snake is None:
+      snake = DEFAULT_SNAKE
 
     self._skip_intro = False
     

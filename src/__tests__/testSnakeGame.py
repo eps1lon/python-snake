@@ -135,6 +135,8 @@ class TestSnakeGame(unittest.TestCase):
     
     self.assertEqual(apple, Point(3, 0))
 
+    game.apples.append(apple)
+
     self.assertListEqual(
       game.screen().occupiedArea(),
       [
