@@ -38,3 +38,6 @@ class Shape(metaclass=ABCMeta):
 
   def __repr__(self):
     return str(self)
+
+  def hasCollisions(self):
+    return any(value for row in self.occupiedArea() for value in row if value > 1)  

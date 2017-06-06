@@ -202,11 +202,11 @@ class TestValidity(unittest.TestCase):
       Segment(a, b),
       Segment(b, c),
       Segment(c, d),
-    ]).collidesWithItself())
+    ]).hasCollisions())
 
     self.assertTrue(Body([
       Segment(a, b),
       Segment(b, c),
       Segment(c, d),
       Segment(d, a),
-    ]).collidesWithItself())
+    ]).hasCollisions())

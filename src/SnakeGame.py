@@ -173,12 +173,14 @@ class SnakeGame(StoppableThread):
 
       #self._display.debug('add apple: {}'.format(apple))
 
-    if self.snake.body.collidesWithItself() is True:
+    screen = self.screen()
+
+    if screen.hasCollisions():
       sleep(COLLISION_TIMEOUT)
       self.resetGame()
 
     # display
-    self._display.show(self.screen())
+    self._display.show(screen)
     self._display.debug(str(command))
 
   def eating_apple(self):
