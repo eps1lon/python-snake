@@ -19,17 +19,18 @@ class Gpio(Controls):
 
     # create closure for self
     def callback(channel):
-      if channel == self._left:
-        self._game.invoke(Command.TURN_LEFT)
-      elif channel == self._right:
-        self._game.invoke(Command.TURN_RIGHT)
-      else:
-        print('unrecognized pin `{}`'.format(pin))
+      if not GPIO.input(channel):
+        if channel == self._left:
+          self._game.invoke(Command.TURN_LEFT)
+        elif channel == self._right:
+          self._game.invoke(Command.TURN_RIGHT)
+        else:
+          print('unrecognized pin `{}`'.format(pin))
 
     for pin in self._pins:
       GPIO.add_event_detect(
         pin,
-        edge=GPIO.RISING,
+        edge=GPIO.FALLING,
         callback=callback,
         bouncetime=10
       )
@@ -60,4 +61,4 @@ class Gpio(Controls):
 
   def _setUpPins(self):
     GPIO.setmode(self._mode)
-    GPIO.setup(self._pins, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(self._pins, GPIO.IN, pull_up_down=GPIO.PUD_UP)
